@@ -11,21 +11,21 @@ else
     <h3 class="mb-5">Produtos</h3>
     @if (Produtos.Count() > 0)
     {
-        <div class="row mt-3">
-            @foreach (var item in Produtos)
-            {
-                <div class="col-md-3 mb-2">
-                    <a href="#">
-                        <div class="card" style="width: 18rem;">
-                            <img class="card-img-top" src="@item.ImagemUrl">
-                            <div class="card-body">
-                                <h5 class="card-title">@item.Preco.ToString("c")</h5>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            }
-        </div>
+        //Consulta LINQ serve para agrupamento, ordenação, busca, entre outros. atráves de dados em JSON Ou XML.
+        var produtoPorCategoria = from produto in Produtos //Define a fonte de dados
+                                  group produto by produto.CategoriaId into prodPorCatGrupo //Produtos agrupados pela propriedade CategoriaID.
+                                  orderby prodPorCatGrupo.Key //organiza os grupos com base na chave CategoriaId
+                                  select prodPorCatGrupo; //Seleciona um sequencia de grupos, onde o grupo contem a mesma CategoriaId
+
+        @foreach(var prodGrupo in produtoPorCategoria) //Foreach passa pro cada grupo de categoria
+        {
+            <h4>@prodGrupo.FirstOrDefault(pg=> pg.CategoriaId == prodGrupo.Key).CategoriaNome</h4>
+            <div class="row mt-3">
+                <ExibirProdutos Produtos="@prodGrupo"></ExibirProdutos>
+            </div>
+            <hr class="mb-2" />
+        }
+        
     }
 }
 
