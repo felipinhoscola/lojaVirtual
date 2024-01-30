@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlazorShop.Api.Controllers;
 
+
 [ApiController]//Permite acesso a recursos para trarar requests e posts http
 [Route("api/[controller]")]
 public class ProdutosController : ControllerBase
@@ -23,7 +24,8 @@ public class ProdutosController : ControllerBase
         {
             var produtos = await _produtoRepository.GetItens();
             if (produtos is null)
-                return NotFound();
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                "Erro ao receber dados do banco de dados ");
 
 
             var produtosDtos = produtos.ConverterProdutosParaDto();
