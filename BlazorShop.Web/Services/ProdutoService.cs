@@ -29,4 +29,29 @@ public class ProdutoService : IProdutoService
         }
 
     }
+
+    public async Task<ProdutoDto> GetProdutoById(int id)
+    {
+        try
+        {
+            var response = await _httpClient.GetAsync($"/api/produtos/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                    return default(ProdutoDto);
+
+                return await response.Content.ReadFromJsonAsync<ProdutoDto>();
+            }
+
+            var message = await response.Content.ReadAsStringAsync();
+            _logger.LogError($"Erro ao obter produto pelo id={id} - {message}");
+            throw new Exception($"Status Code: {response.StatusCode} - {message}");
+        }
+        catch (Exception)
+        {
+            _logger.LogError($"Erro ao obter produto pelo id={id}");
+            throw;
+        }
+    }
 }
