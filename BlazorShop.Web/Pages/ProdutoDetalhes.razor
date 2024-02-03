@@ -22,7 +22,9 @@
                 </b>
             </p>
             <div>
-                <button class="btn btn-success">Incluir no Carrinho</button>
+                <button class="btn btn-success" @onclick="()=>AdicionarAoCarrinho_Click(new CarrinhoItemAdicionaDto{
+                                                            CarrinhoId = UsuarioLogado.CarrinhoId, ProdutoId = Produto.Id, Quantidade = 1})">
+                                                            Incluir no Carrinho</button>
             </div>
         </div>
     </div>
@@ -33,6 +35,9 @@
 @code {
     [Inject]   
     public IProdutoService? ProdutoService { get; set; }
+
+    [Inject]
+    public ICarrinhoCompraService? carrinhoCompraService { get; set; }
 
     [Parameter]
     public int Id { get; set; }
@@ -48,6 +53,18 @@
         catch (Exception ex)
         {
             MensagemErro = ex.Message;
+        }
+    }
+
+    protected async Task AdicionarAoCarrinho_Click(CarrinhoItemAdicionaDto carrinhoItemAdicionaDto)
+    {
+        try
+        {
+            var carrinhoItemDto = await carrinhoCompraService.AdicionaItem(carrinhoItemAdicionaDto);
+        }
+        catch (Exception)
+        {
+            throw new Exception ("Erro ao adicionar item ao carrinho");
         }
     }
 }

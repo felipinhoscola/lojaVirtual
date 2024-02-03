@@ -28,7 +28,7 @@ namespace BlazorShop.Api.Repositories
                                   {
                                       CarrinhoId = carrinhoItemAdicionaDto.CarrinhoId,
                                       ProdutoId = produto.Id,
-                                      Quantidade = carrinhoItemAdicionaDto.Quatindade
+                                      Quantidade = carrinhoItemAdicionaDto.Quantidade
                                   }).SingleOrDefaultAsync();
                 if (item is not null)
                 {

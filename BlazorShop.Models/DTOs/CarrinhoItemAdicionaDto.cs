@@ -9,6 +9,6 @@ namespace BlazorShop.Models.DTOs
         [Required]
         public int ProdutoId { get; set; }
         [Required]
-        public int Quatindade { get; set; }
+        public int Quantidade { get; set; }
     }
 }

@@ -63,5 +63,28 @@ namespace BlazorShop.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpPost]
+        public async Task<ActionResult<CarrinhoItemDto>> PostItem([FromBody] CarrinhoItemAdicionaDto carrinhoItemAdicionaDto)
+        {
+            try
+            {
+                var novoCarrinhoItem = await carrinhoCompraRepo.AdicionaItem(carrinhoItemAdicionaDto);
+                if (novoCarrinhoItem == null) return NoContent(); //Status 204
+
+                var produto = await produtoRepo.GetItem(carrinhoItemAdicionaDto.ProdutoId);
+                if (produto == null) throw new Exception($"Produto não localizado (Id:({carrinhoItemAdicionaDto.ProdutoId})");
+
+                var novoCarrinhoItemDto = novoCarrinhoItem.ConverterCarrinhoItemParaDto(produto);
+
+                return CreatedAtAction(nameof(GetItem), new { id = novoCarrinhoItemDto.Id }, novoCarrinhoItemDto);
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("## Erro ao criar um novo item no carrinho");
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }
