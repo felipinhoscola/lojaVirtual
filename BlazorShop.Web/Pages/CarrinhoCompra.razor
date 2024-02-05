@@ -1,0 +1,93 @@
+﻿@page "/CarrinhoCompra"
+
+@if (carrinhoCompraItens is null && MensagemErro is null)
+{
+<ExibirSpinner />
+}else if(MensagemErro is not null)
+{
+    <ExibirErro MensagemErro="@MensagemErro"></ExibirErro>
+} else
+{
+    <h3 class="mb-5">Carrinho</h3>
+    @if(carrinhoCompraItens.Count() > 0)
+    {
+        <div class="row mb-5">
+            <div class="col-md-9">
+                @foreach(var item in carrinhoCompraItens)
+                {
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <img src="@item.ProdutoImagemURL" width="250" class="img-thumbnail"/>
+                        </div>
+                        <div class="col-md-9">
+                            <h5>@item.ProdutoNome</h5>
+                            <div class="mb-4">@item.ProdutoDescricao</div>
+                            <span>Preço: <b>@item.Preco.ToString("C")</b></span>
+                            <div>
+                                <button class="btn btn-danger sm" @onclick = "(()=> DeletaCarrinhoItem_Click(item.Id))">
+                                    <span class="bi bi-trash"></span>    
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="col-md-3">
+                <h5>Carrinho - Resumo</h5>
+                <div class="mt-2">
+                    <div>Total - </div>
+                    <a href="#" class="btn btn-success">
+                        <span class="bi bi-credit-card"></span>&nbsp; Fechar Pedido
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div>
+            <h3><b>Seu carrinho esta vazio</b></h3>
+        </div>
+    }
+}
+
+@code {
+    [Inject]
+    public ICarrinhoCompraService? carrinhoCompraService { get; set; }
+
+    public List<CarrinhoItemDto>? carrinhoCompraItens { get; set; }
+
+    public string? MensagemErro { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            carrinhoCompraItens = await carrinhoCompraService.GetItens(UsuarioLogado.UsuarioId);
+        }
+        catch (Exception ex)
+        {
+            MensagemErro = ex.Message;
+        }
+    }
+
+    protected async Task DeletaCarrinhoItem_Click(int id)
+    {
+        //excluir o item do bando de dados do carrinho usuario
+        var carrinhoItemDto = await carrinhoCompraService.DeletaItem(id);
+
+        //remoção do item da coileção de objetos da memoria no cliente
+        await RemoveCarrinhoItem(id);
+    }
+
+    private CarrinhoItemDto GetCarrinhoItem(int id)
+    {
+        return carrinhoCompraItens.FirstOrDefault(i => i.Id == id);
+    }
+
+    private async Task RemoveCarrinhoItem(int id)
+    {
+        var carrinhoItemDto = GetCarrinhoItem(id);
+        carrinhoCompraItens.Remove(carrinhoItemDto);
+    }
+}

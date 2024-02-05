@@ -45,9 +45,16 @@ namespace BlazorShop.Api.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<CarrinhoItem> DeletaItem(int id)
+        public async Task<CarrinhoItem> DeletaItem(int id)
         {
-            throw new NotImplementedException();
+            var item = await _context.CarrinhoItens.FindAsync(id);
+
+            if (item is not null)
+            {
+                _context.CarrinhoItens.Remove(item);
+                await _context.SaveChangesAsync();
+            }
+            return item;
         }
 
         public async Task<CarrinhoItem> GetItem(int id)

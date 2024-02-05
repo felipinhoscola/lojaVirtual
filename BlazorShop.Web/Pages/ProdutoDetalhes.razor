@@ -39,6 +39,9 @@
     [Inject]
     public ICarrinhoCompraService? carrinhoCompraService { get; set; }
 
+    [Inject]
+    public NavigationManager? navigationManager { get; set; }   
+
     [Parameter]
     public int Id { get; set; }
     public ProdutoDto? Produto { get; set; }
@@ -61,6 +64,7 @@
         try
         {
             var carrinhoItemDto = await carrinhoCompraService.AdicionaItem(carrinhoItemAdicionaDto);
+            navigationManager.NavigateTo("/CarrinhoCompra");
         }
         catch (Exception)
         {

@@ -86,5 +86,27 @@ namespace BlazorShop.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<CarrinhoItemDto>> DeleteItem(int id)
+        {
+            try
+            {
+                var carrinhoItem = await carrinhoCompraRepo.DeletaItem(id);
+                if (carrinhoItem == null) return NotFound();
+
+                var produto = await produtoRepo.GetItem(carrinhoItem.Id);
+                if (produto == null) return NotFound();
+
+                var carrinhoItemDto = carrinhoItem.ConverterCarrinhoItemParaDto(produto);
+                return Ok(carrinhoItemDto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
+
+
 }

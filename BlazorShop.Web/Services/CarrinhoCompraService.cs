@@ -34,6 +34,23 @@ namespace BlazorShop.Web.Services
             }
         }
 
+        public async Task<CarrinhoItemDto> DeletaItem(int id)
+        {
+            try
+            {
+                var response = await _httpClient.DeleteAsync($"api/CarrinhoCompra/{id}");
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadFromJsonAsync<CarrinhoItemDto>();
+                }
+                return default(CarrinhoItemDto);
+            }
+            catch (Exception)
+            {
+                throw new Exception("Erro ao fazer requisicões da api");
+            }
+        }
+
         public async Task<List<CarrinhoItemDto>> GetItens(int usuarioId)
         {
             try
