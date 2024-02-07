@@ -32,16 +32,15 @@ else
 @code {
     public IEnumerable<ProdutoDto>? Produtos { get; set; }
 
+    [Inject]
+    public ICarrinhoCompraService? carrinhoCompraService { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            Produtos = await produtoService.GetItens();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Erro ao carregar produtos: {ex.Message}");
-            throw;
-        }
+        Produtos = await produtoService.GetItens();
+
+        var carrinhoCompraItens = await carrinhoCompraService.GetItens(UsuarioLogado.UsuarioId);
+        var totalQuantidade = carrinhoCompraItens.Sum(i => i.Quantidade);
+
+        carrinhoCompraService.RaiseEventOnCarrinhoCompraChanged(totalQuantidade);
     }
 }
