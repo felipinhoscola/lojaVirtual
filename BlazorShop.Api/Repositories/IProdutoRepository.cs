@@ -10,4 +10,6 @@ public interface IProdutoRepository
     Task<Produto> GetItem(int id);
     //busca todos itens da categoria através do id da categoria
     Task<IEnumerable<Produto>> GetItensPorCategoria(int id);
+    //busca todas categorias
+    Task<IEnumerable<Categoria>> GetCategorias();
 }

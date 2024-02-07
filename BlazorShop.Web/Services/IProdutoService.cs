@@ -6,4 +6,6 @@ public interface IProdutoService
 {
     Task<IEnumerable<ProdutoDto>> GetItens();
     Task<ProdutoDto> GetProdutoById(int id);
+    Task<IEnumerable<CategoriaDto>> GetCategorias();
+    Task<IEnumerable<ProdutoDto>> GetItensPorCategoria(int categoriaId);
 }

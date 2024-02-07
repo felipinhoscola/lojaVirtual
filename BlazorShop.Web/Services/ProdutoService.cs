@@ -14,6 +14,28 @@ public class ProdutoService : IProdutoService
         _logger = logger;
     }
 
+    public async Task<IEnumerable<CategoriaDto>> GetCategorias()
+    {
+        try
+        {
+            var response = await _httpClient.GetAsync("api/Produtos/GetCategorias");
+            if (response.IsSuccessStatusCode)
+            {
+                if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                    return Enumerable.Empty<CategoriaDto>();
+
+                return await response.Content.ReadFromJsonAsync<IEnumerable<CategoriaDto>>();
+            }
+            var message = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Http Status Code - {response.StatusCode} Message - {message}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Erro ao acessar categorias: {ex.Message}");
+            throw;
+        }
+    }
+
     public async Task<IEnumerable<ProdutoDto>> GetItens()
     {
         try
@@ -28,6 +50,29 @@ public class ProdutoService : IProdutoService
             throw;
         }
 
+    }
+
+    public async Task<IEnumerable<ProdutoDto>> GetItensPorCategoria(int categoriaId)
+    {
+        try
+        {
+            var response = await _httpClient.GetAsync($"api/Produtos/GetItensPorCategoria/{categoriaId}");
+            if (response.IsSuccessStatusCode)
+            {
+                if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                    return default(IEnumerable<ProdutoDto>);
+
+                return await response.Content.ReadFromJsonAsync<IEnumerable<ProdutoDto>>();
+            }
+
+            var message = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Status Code: {response.StatusCode} - {message}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Erro ao obter categoria pelo id={categoriaId} - {ex.Message}");
+            throw;
+        }
     }
 
     public async Task<ProdutoDto> GetProdutoById(int id)

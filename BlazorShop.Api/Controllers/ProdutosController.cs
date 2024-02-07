@@ -77,4 +77,23 @@ public class ProdutosController : ControllerBase
                             "Erro ao receber dados do banco de dados ");
         }
     }
+
+    [HttpGet]
+    [Route("GetCategorias")]
+    public async Task<ActionResult<IEnumerable<CategoriaDto>>> GetCategorias()
+    {
+        try
+        {
+            var categorias = await _produtoRepository.GetCategorias();
+            if (categorias is null) return NotFound("Lista de Categorias não encontrada");
+
+            var categoriasDto = categorias.ConverterCategoriasParaDto();
+            return Ok(categoriasDto);
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                            "Erro ao receber dados do banco de dados ");
+        }
+    }
 }
