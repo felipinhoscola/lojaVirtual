@@ -42,6 +42,14 @@
     [Inject]
     public NavigationManager? navigationManager { get; set; }   
 
+    [Inject]
+    public IGerenciaCarrinhoItensLocalStorageService gerenciaCarrinhoLocalS { get; set; }
+
+    [Inject]
+    public IGerenciaProdutosLocalStorageService gerenciaProdutoLocalS { get; set; }
+
+    public List<CarrinhoItemDto>? carrinhoCompraItens { get; set; }
+
     [Parameter]
     public int Id { get; set; }
     public ProdutoDto? Produto { get; set; }
