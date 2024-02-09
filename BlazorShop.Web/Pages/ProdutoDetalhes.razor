@@ -59,7 +59,9 @@
     {
         try
         {
-            Produto = await ProdutoService.GetProdutoById(Id);
+            carrinhoCompraItens = await gerenciaCarrinhoLocalS.GetCollection();
+            //Produto = await ProdutoService.GetProdutoById(Id);
+            Produto = await GetProdutoPorId(Id);
         }
         catch (Exception ex)
         {
@@ -72,12 +74,26 @@
         try
         {
             var carrinhoItemDto = await carrinhoCompraService.AdicionaItem(carrinhoItemAdicionaDto);
+            if(carrinhoItemDto != null)
+            {
+                carrinhoCompraItens.Add(carrinhoItemDto);
+                await gerenciaCarrinhoLocalS.SaveCollection(carrinhoCompraItens);
+            }
             navigationManager.NavigateTo("/CarrinhoCompra");
         }
         catch (Exception)
         {
             throw new Exception ("Erro ao adicionar item ao carrinho");
         }
+    }
+
+    private async Task<ProdutoDto> GetProdutoPorId(int id)
+    {
+        var produtosDto = await gerenciaProdutoLocalS.GetCollection();
+        if (produtosDto != null)
+            return produtosDto.SingleOrDefault(p => p.Id == id);
+
+        return null;
     }
 }
 

@@ -23,6 +23,12 @@
     [Inject]
     public IProdutoService? produtoService { get; set; }
 
+    [Inject]
+    public IGerenciaCarrinhoItensLocalStorageService gerenciaCarrinhoLocalS { get; set; }
+
+    [Inject]
+    public IGerenciaProdutosLocalStorageService gerenciaProdutoLocalS { get; set; }
+
     public IEnumerable<ProdutoDto>? produtosDto { get; set; }
 
     public string? NomeCategoria { get; set; }
@@ -32,7 +38,8 @@
     {
         try
         {
-            produtosDto = await produtoService.GetItensPorCategoria(categoriaId);
+            //produtosDto = await produtoService.GetItensPorCategoria(categoriaId);
+            produtosDto = await GetColecaoProdutosPorCatedoriaId(categoriaId);
 
             if (produtosDto != null && produtosDto.Count() > 0)
             {
@@ -45,5 +52,16 @@
         {
             throw;
         }
+    }
+
+    private async Task<IEnumerable<ProdutoDto>> GetColecaoProdutosPorCatedoriaId(int categoriaId)
+    {
+        var produtoCollection = await gerenciaProdutoLocalS.GetCollection();
+
+        if(produtoCollection != null)
+        {
+            return produtoCollection.Where(p => p.CategoriaId == categoriaId);
+        }
+        return await produtoService.GetItensPorCategoria(categoriaId);
     }
 }
