@@ -12,6 +12,7 @@ namespace BlazorShop.Api.Context
         public DbSet<Produto>? Produtos { get; set; }
         public DbSet<Categoria>? Categorias { get; set; }
         public DbSet<Usuario>? Usuarios { get; set; }
+        public DbSet<LoginUser>? LoginUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -266,14 +267,27 @@ namespace BlazorShop.Api.Context
             modelBuilder.Entity<Usuario>().HasData(new Usuario
             {
                 Id = 1,
-                NomeUsuario = "Macoratti"
-
+                NomeUsuario = "Macoratti",
+                LoginId = 1
             });
             modelBuilder.Entity<Usuario>().HasData(new Usuario
             {
                 Id = 2,
-                NomeUsuario = "Janice"
-
+                NomeUsuario = "Janice",
+                LoginId = 2
+            });
+            //Create Loggin Users
+            modelBuilder.Entity<LoginUser>().HasData(new LoginUser
+            {
+                Id = 1,
+                Login = "macorratilogin123",
+                Password = "senha5678"
+            });
+            modelBuilder.Entity<LoginUser>().HasData(new LoginUser
+            {
+                Id = 2,
+                Login = "janicelogin123",
+                Password = "senha1234"
             });
 
             //Create Shopping Carrinho for Users

@@ -10,5 +10,7 @@ namespace BlazorShop.Api.Entities
         public string NomeUsuario { get; set; } = string.Empty;
 
         public Carrinho? Carrinho { get; set; }
+        public int LoginId { get; set; }
+        public LoginUser? Login { get; set; }
     }
 }
